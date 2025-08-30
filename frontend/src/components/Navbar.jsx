@@ -2,7 +2,10 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { logo } from '../assets';
+import { useAuth } from '../hooks/useAuth.jsx';
+import ProfileDropdown from './ProfileDropdown/ProfileDropdown';
 
 const navLinks = [
   { title: "Home", href: "/" },
@@ -14,6 +17,9 @@ const navLinks = [
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
+  
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const menuVariants = {
@@ -42,9 +48,18 @@ const Navbar = () => {
             ))}
           </nav>
 
-          <a href="#" className="hidden md:block bg-off-white text-black font-medium py-3 px-6 rounded-xl text-sm shadow-lg hover:bg-gray-200 transition-colors">
-            Book a Call
-          </a>
+          <div className="hidden md:flex items-center gap-4">
+            {isAuthenticated ? (
+              <ProfileDropdown />
+            ) : (
+              <button
+                onClick={() => navigate('/login')}
+                className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-xl transition-colors text-sm"
+              >
+                Login
+              </button>
+            )}
+          </div>
 
           <div className="md:hidden z-50" onClick={toggleMenu}>
             <div className="space-y-1.5 cursor-pointer">
